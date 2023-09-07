@@ -9,10 +9,56 @@ import Foundation
 
 public enum ShellError: Error {
     case platformNotSupported
+    case commandNotFound
     case taskFailed
 }
 
+public enum Shells: String {
+    case bash = "/bin/bash"
+    case zsh = "/bin/zsh"
+    case sh = "/bin/sh"
+}
+
 open class Shell {
+    @discardableResult
+    func directoryRun(_ cmd: String) -> String {
+        let task = Process()
+        let pipe = Pipe()
+
+        task.standardOutput = pipe
+        task.arguments = ["-c", cmd]
+        task.launchPath = "/bin/sh"
+        task.launch()
+
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: data, encoding: .utf8) ?? ""
+
+        task.waitUntilExit()
+        return output
+    }
+    
+
+    @discardableResult
+    func safeRun(_ cmd: String, args: [String], shell: Shells = .sh) throws -> String {
+        #if os(iOS) || os(watchOS) || os(tvOS)
+            throw ShellError.platformNotSupported
+        #else
+        let task = Process()
+        let pipe = Pipe()
+        
+        task.standardOutput = pipe
+        task.arguments = ["-c", cmd]
+        task.launchPath = shell.rawValue
+        task.launch()
+
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: data, encoding: .utf8) ?? ""
+
+        task.waitUntilExit()
+        return output
+        #endif
+    }
+
     @discardableResult
     public static func run(_ cmd: String, arguments: [String] = []) throws -> Int32 {
         #if os(iOS) || os(watchOS) || os(tvOS)
