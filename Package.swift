@@ -4,20 +4,20 @@
 import PackageDescription
 
 let package = Package(
-    name: "Shell.swift",
+    name: "ShellSwift",
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "Shell.swift",
-            targets: ["Shell.swift"]),
+            name: "ShellSwift",
+            targets: ["ShellSwift"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Shell.swift"),
+            name: "ShellSwift"),
         .testTarget(
-            name: "Shell.swiftTests",
-            dependencies: ["Shell.swift"]),
+            name: "ShellSwiftTests",
+            dependencies: ["ShellSwift"]),
     ]
 )
