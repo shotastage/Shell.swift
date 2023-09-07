@@ -21,7 +21,7 @@ public enum Shells: String {
 
 open class Shell {
     @discardableResult
-    func directoryRun(_ cmd: String) -> String {
+    public static func directoryRun(_ cmd: String) -> String {
         let task = Process()
         let pipe = Pipe()
 
@@ -39,7 +39,7 @@ open class Shell {
     
 
     @discardableResult
-    func safeRun(_ cmd: String, args: [String], shell: Shells = .sh) throws -> String {
+    public static func safeRun(_ cmd: String, args: [String], shell: Shells = .sh) throws -> String {
         #if os(iOS) || os(watchOS) || os(tvOS)
             throw ShellError.platformNotSupported
         #else
