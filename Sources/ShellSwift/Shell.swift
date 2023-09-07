@@ -21,7 +21,7 @@ public enum Shells: String {
 
 open class Shell {
     @discardableResult
-    public static func directoryRun(_ cmd: String) -> String {
+    public static func directoryRun(_ cmd: String ,out: Bool = false) -> String {
         let task = Process()
         let pipe = Pipe()
 
@@ -34,9 +34,14 @@ open class Shell {
         let output = String(data: data, encoding: .utf8) ?? ""
 
         task.waitUntilExit()
+
+        if out {
+            print(output)
+        }
+
         return output
     }
-    
+
 
     @discardableResult
     public static func safeRun(_ cmd: String, args: [String], shell: Shells = .sh) throws -> String {
@@ -45,7 +50,7 @@ open class Shell {
         #else
         let task = Process()
         let pipe = Pipe()
-        
+
         task.standardOutput = pipe
         task.arguments = ["-c", cmd]
         task.launchPath = shell.rawValue
